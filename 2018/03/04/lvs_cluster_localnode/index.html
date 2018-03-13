@@ -100,11 +100,11 @@
 
 
   
-  <meta name="keywords" content="lvs,keepalived,two box,localnode," />
+  <meta name="keywords" content="lvs,keepalived,ipvs,vrrp,netfilter,localnode," />
 
 
 <meta name="description" content="LVS：LocalNodeLVS经典部署场景是Director服务器与RealServer服务器分开部署，独立服务器，一来是为了充分利用硬件性能，二来是为了避免故障相互影响。然而某些时候会把Director与RealServer视为一个软件模块部署在同一台服务器上，用两台服务器部署两套软件，实现负载与高可用。   Two Box LVS仅在两台设备上同样可以完整的实现LVS的故障处理。其中一台设备">
-<meta name="keywords" content="lvs,keepalived,two box,localnode">
+<meta name="keywords" content="lvs,keepalived,ipvs,vrrp,netfilter,localnode">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LVS：LocalNode &#x2F; Two Box LVS &#x2F; LVS集成模式配置与原理详解">
 <meta property="og:url" content="http://yoursite.com/2018/03/04/lvs_cluster_localnode/index.html">
@@ -117,7 +117,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/03/04/lvs_cluster_localnode/introduce-lvs-mark.png">
 <meta property="og:image" content="http://yoursite.com/2018/03/04/lvs_cluster_localnode/introduce-lvs-netfilter-1.png">
 <meta property="og:image" content="http://yoursite.com/2018/03/04/lvs_cluster_localnode/introduce-lvs-netfilter-2.png">
-<meta property="og:updated_time" content="2018-03-12T09:23:19.000Z">
+<meta property="og:updated_time" content="2018-03-13T08:03:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LVS：LocalNode &#x2F; Two Box LVS &#x2F; LVS集成模式配置与原理详解">
 <meta name="twitter:description" content="LVS：LocalNodeLVS经典部署场景是Director服务器与RealServer服务器分开部署，独立服务器，一来是为了充分利用硬件性能，二来是为了避免故障相互影响。然而某些时候会把Director与RealServer视为一个软件模块部署在同一台服务器上，用两台服务器部署两套软件，实现负载与高可用。   Two Box LVS仅在两台设备上同样可以完整的实现LVS的故障处理。其中一台设备">
@@ -200,7 +200,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle">blogs</p>
+        <p class="site-subtitle">为了精品</p>
       
   </div>
 
@@ -226,9 +226,21 @@
         </li>
       
         
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+        </li>
+      
+        
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
         </li>
       
         
@@ -328,7 +340,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/load-balance/" itemprop="url" rel="index"><span itemprop="name">load balance</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
 
                 
                 
@@ -625,7 +637,11 @@ firewall-cmd --reload
           
             <a href="/tags/keepalived/" rel="tag"># keepalived</a>
           
-            <a href="/tags/two-box/" rel="tag"># two box</a>
+            <a href="/tags/ipvs/" rel="tag"># ipvs</a>
+          
+            <a href="/tags/vrrp/" rel="tag"># vrrp</a>
+          
+            <a href="/tags/netfilter/" rel="tag"># netfilter</a>
           
             <a href="/tags/localnode/" rel="tag"># localnode</a>
           
@@ -640,15 +656,15 @@ firewall-cmd --reload
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/03/04/lvs_cluster_solution/" rel="next" title="Linux服务器集群方案介绍">
+                <i class="fa fa-chevron-left"></i> Linux服务器集群方案介绍
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/03/12/lvs_cluster_solution/" rel="prev" title="Linux服务器集群方案介绍">
-                Linux服务器集群方案介绍 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -732,14 +748,14 @@ firewall-cmd --reload
                 
                 
                 <div class="site-state-item site-state-categories">
-                  
+                  <a href="/categories/index.html">
                     
                     
                       
                     
                     <span class="site-state-item-count">1</span>
                     <span class="site-state-item-name">分类</span>
-                  
+                  </a>
                 </div>
               
 
@@ -747,7 +763,7 @@ firewall-cmd --reload
                 
                 
                 <div class="site-state-item site-state-tags">
-                  
+                  <a href="/tags/index.html">
                     
                     
                       
@@ -758,9 +774,13 @@ firewall-cmd --reload
                     
                       
                     
-                    <span class="site-state-item-count">4</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">标签</span>
-                  
+                  </a>
                 </div>
               
             </nav>

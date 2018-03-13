@@ -106,24 +106,24 @@
 <meta name="description" content="服务(器)集群，涉及的知识点相对偏OS底层些，所以想理解掌握整体的方案，需要把相关的知识点系统的掌握。centos7+nginx+keepalived实践，及原理分析centos7+lvs+keepalived实践，及原理分析本文尽可能的关注解决方案的整体与关键点，弱化介绍方案中各软件应用的参数配置. ##依赖知识点大致可分为三块：OS(Centos7，不同系统、版本间会有细微差异)，网络(协议，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux服务器集群方案介绍">
-<meta property="og:url" content="http://yoursite.com/2018/03/12/lvs_cluster_solution/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/03/04/lvs_cluster_solution/index.html">
 <meta property="og:site_name" content="WolfJ">
 <meta property="og:description" content="服务(器)集群，涉及的知识点相对偏OS底层些，所以想理解掌握整体的方案，需要把相关的知识点系统的掌握。centos7+nginx+keepalived实践，及原理分析centos7+lvs+keepalived实践，及原理分析本文尽可能的关注解决方案的整体与关键点，弱化介绍方案中各软件应用的参数配置. ##依赖知识点大致可分为三块：OS(Centos7，不同系统、版本间会有细微差异)，网络(协议，">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/2018/03/12/images/nat.png">
-<meta property="og:image" content="http://yoursite.com/2018/03/12/images/dr.png">
-<meta property="og:updated_time" content="2018-03-12T08:02:39.000Z">
+<meta property="og:image" content="http://yoursite.com/2018/03/04/images/nat.png">
+<meta property="og:image" content="http://yoursite.com/2018/03/04/images/dr.png">
+<meta property="og:updated_time" content="2018-03-13T08:03:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux服务器集群方案介绍">
 <meta name="twitter:description" content="服务(器)集群，涉及的知识点相对偏OS底层些，所以想理解掌握整体的方案，需要把相关的知识点系统的掌握。centos7+nginx+keepalived实践，及原理分析centos7+lvs+keepalived实践，及原理分析本文尽可能的关注解决方案的整体与关键点，弱化介绍方案中各软件应用的参数配置. ##依赖知识点大致可分为三块：OS(Centos7，不同系统、版本间会有细微差异)，网络(协议，">
-<meta name="twitter:image" content="http://yoursite.com/2018/03/12/images/nat.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/03/04/images/nat.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/03/12/lvs_cluster_solution/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/03/04/lvs_cluster_solution/"/>
 
 
 
@@ -195,7 +195,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle">blogs</p>
+        <p class="site-subtitle">为了精品</p>
       
   </div>
 
@@ -221,9 +221,21 @@
         </li>
       
         
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+        </li>
+      
+        
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
         </li>
       
         
@@ -273,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/12/lvs_cluster_solution/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/04/lvs_cluster_solution/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WolfJ">
@@ -302,7 +314,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-12T16:02:39+08:00">2018-03-12</time>
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-04T15:46:00+08:00">2018-03-04</time>
             
 
             
@@ -311,6 +323,24 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -354,8 +384,8 @@
 <p>1.2 DR模式<br>未尝试  </p>
 <h4 id="LocalNode-两台负载负载-多真实服务器"><a href="#LocalNode-两台负载负载-多真实服务器" class="headerlink" title="LocalNode+两台负载负载+多真实服务器"></a>LocalNode+两台负载负载+多真实服务器</h4><p>lvs + keepalived 两台负载调度器，集成在某两台真实服务器中，实现负载及高可用。<br>2.1 NAT模式<br>未尝试</p>
 <p>2.2 DR模式<br><strong>参考连接：</strong><br><a href="http://kb.linuxvirtualserver.org/wiki/Building_Two-Node_Directors/Real_Servers_using_LVS_and_Keepalived" target="_blank" rel="noopener">Building Two-Node Directors/Real Servers using LVS and Keepalived</a><br><a href="http://linbo.github.io/2017/08/20/lvs-dr" target="_blank" rel="noopener">LVS DR模式的一些问题</a><br><a href="http://gcharriere.com/blog/?p=339" target="_blank" rel="noopener">Failover and loadbalancer using keepalived (LVS) on two machines -ok</a></p>
-<h3 id="场景图说明"><a href="#场景图说明" class="headerlink" title="场景图说明"></a>场景图说明</h3><p>lvs + keepalived NAT mode:<br><img src="/2018/03/12/lvs_cluster_solution/../images/nat.png" alt="lvs + keepalived NAT模式"></p>
-<p>lvs + keepalived DR mode:<br><img src="/2018/03/12/lvs_cluster_solution/../images/dr.png" alt="lvs + keepalived DR模式"></p>
+<h3 id="场景图说明"><a href="#场景图说明" class="headerlink" title="场景图说明"></a>场景图说明</h3><p>lvs + keepalived NAT mode:<br><img src="/2018/03/04/lvs_cluster_solution/../images/nat.png" alt="lvs + keepalived NAT模式"></p>
+<p>lvs + keepalived DR mode:<br><img src="/2018/03/04/lvs_cluster_solution/../images/dr.png" alt="lvs + keepalived DR模式"></p>
 <h2 id="场景详解"><a href="#场景详解" class="headerlink" title="场景详解"></a>场景详解</h2><p>参见每个具体的场景介绍</p>
 <p>独立部署步骤</p>
 <ul>
@@ -396,8 +426,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/04/lvs_cluster_localnode/" rel="next" title="LVS：LocalNode / Two Box LVS / LVS集成模式配置与原理详解">
-                <i class="fa fa-chevron-left"></i> LVS：LocalNode / Two Box LVS / LVS集成模式配置与原理详解
+              <a href="/2018/03/01/start/" rel="next" title="开篇，为精品而努力.">
+                <i class="fa fa-chevron-left"></i> 开篇，为精品而努力.
               </a>
             
           </div>
@@ -406,8 +436,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/12/index/" rel="prev" title="Welcome to here.">
-                Welcome to here. <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/04/lvs_cluster_localnode/" rel="prev" title="LVS：LocalNode / Two Box LVS / LVS集成模式配置与原理详解">
+                LVS：LocalNode / Two Box LVS / LVS集成模式配置与原理详解 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -492,14 +522,14 @@
                 
                 
                 <div class="site-state-item site-state-categories">
-                  
+                  <a href="/categories/index.html">
                     
                     
                       
                     
                     <span class="site-state-item-count">1</span>
                     <span class="site-state-item-name">分类</span>
-                  
+                  </a>
                 </div>
               
 
@@ -507,7 +537,7 @@
                 
                 
                 <div class="site-state-item site-state-tags">
-                  
+                  <a href="/tags/index.html">
                     
                     
                       
@@ -518,9 +548,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">4</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">标签</span>
-                  
+                  </a>
                 </div>
               
             </nav>
