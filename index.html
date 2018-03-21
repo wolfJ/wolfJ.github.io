@@ -106,7 +106,7 @@
 <meta name="description" content="For the elegance of existence">
 <meta property="og:type" content="website">
 <meta property="og:title" content="WolfJ">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="http://jiangyu86.cn/index.html">
 <meta property="og:site_name" content="WolfJ">
 <meta property="og:description" content="For the elegance of existence">
 <meta property="og:locale" content="zh-CN">
@@ -119,7 +119,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://jiangyu86.cn/"/>
 
 
 
@@ -292,7 +292,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/14/lvs_cluster_normal/">
+    <link itemprop="mainEntityOfPage" href="http://jiangyu86.cn/2018/03/16/cluster/lvs_diagnose/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WolfJ">
@@ -311,7 +311,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/14/lvs_cluster_normal/" itemprop="url">lvs+keepalived集群独立部署配置</a></h1>
+                <a class="post-title-link" href="/2018/03/16/cluster/lvs_diagnose/" itemprop="url">Linux/Centos7 下排查集群环境问题方法</a></h1>
         
 
         <div class="post-meta">
@@ -323,7 +323,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-14T11:06:00+08:00">2018-03-14</time>
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-16T14:21:00+08:00">2018-03-16</time>
             
 
             
@@ -380,7 +380,42 @@
       
         
           
-            <h2 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h2><p><a href="http://zh.linuxvirtualserver.org/node/2585" target="_blank" rel="noopener">http://zh.linuxvirtualserver.org/node/2585</a></p>
+            <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p>在Centos7下部署、配置集群环境时，经常会遇到各种问题，需要一些相关排查技能才可以做到兵来将挡，应对自如。</p>
+<h2 id="技能介绍"><a href="#技能介绍" class="headerlink" title="技能介绍"></a>技能介绍</h2><h3 id="如何查看-debug-iptables-netfilter的详细日志"><a href="#如何查看-debug-iptables-netfilter的详细日志" class="headerlink" title="如何查看(debug) iptables/netfilter的详细日志"></a>如何查看(debug) iptables/netfilter的详细日志</h3><p>Load the (IPv4) netfilter log kernel module:</p>
+<pre><code>modprobe nf_log_ipv4
+</code></pre><p>Enable logging for the IPv4 (AF Family 2):</p>
+<pre><code>sysctl net.netfilter.nf_log.2=nf_log_ipv4
+</code></pre><p>reconfigure rsyslogd to log kernel messages (kern.*) to /var/log/kern:</p>
+<pre><code>vi /etc/rsyslog.conf
+#去掉 #kern.* 前面的#号，且指定日志输出的路径。
+
+&gt; cat /etc/rsyslog.conf | grep -e &quot;^kern&quot;
+kern.*                                /var/log/kern
+</code></pre><p>restart rsyslogd:</p>
+<pre><code>systemctl restart rsyslog
+</code></pre><p>例子    </p>
+<pre><code>#如果想跟踪80端口:
+iptables -t raw -I PREROUTING 1 -p tcp --dport 80 -j TRACE
+iptables -t raw -I OUTPUT 1 -p tcp --sport 80 -j TRACE
+#如果想跟踪ping的协议:
+iptables -t raw -A OUTPUT -p icmp -j TRACE
+iptables -t raw -A PREROUTING -p icmp -j TRACE
+</code></pre><p>检查</p>
+<pre><code>iptables -t raw -L
+</code></pre><p>使用</p>
+<pre><code>tailf /var/log/kern
+Mar 16 02:46:36 localhost kernel: TRACE: mangle:PRE_public_allow:return:1 IN=enp0s3 OUT= MAC=08:00:27:45:5a:f5:08:00:27:56:8a:c4:08:00 SRC=172.16.0.8 DST=172.16.0.11 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=35794 DF PROTO=TCP SPT=36842 DPT=80 SEQ=3332505839 ACK=2042156962 WINDOW=229 RES=0x00 ACK RST URGP=0 OPT (0101080A0000000001189425)
+Mar 16 02:46:36 localhost kernel: TRACE: mangle:PRE_public:return:4 IN=enp0s3 OUT= MAC=08:00:27:45:5a:f5:08:00:27:56:8a:c4:08:00 SRC=172.16.0.8 DST=172.16.0.11 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=35794 DF PROTO=TCP SPT=36842 DPT=80 SEQ=3332505839 ACK=2042156962 WINDOW=229 RES=0x00 ACK RST URGP=0 OPT (0101080A0000000001189425)
+Mar 16 02:46:36 localhost kernel: TRACE: mangle:PREROUTING:policy:4 IN=enp0s3 OUT= MAC=08:00:27:45:5a:f5:08:00:27:56:8a:c4:08:00 SRC=172.16.0.8 DST=172.16.0.11 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=35794 DF PROTO=TCP SPT=36842 DPT=80 SEQ=3332505839 ACK=2042156962 WINDOW=229 RES=0x00 ACK RST URGP=0 OPT (0101080A0000000001189425)
+Mar 16 02:46:36 localhost kernel: TRACE: mangle:INPUT:rule:1 IN=enp0s3 OUT= MAC=08:00:27:45:5a:f5:08:00:27:56:8a:c4:08:00 SRC=172.16.0.8 DST=172.16.0.11 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=35794 DF PROTO=TCP SPT=36842 DPT=80 SEQ=3332505839 ACK=2042156962 WINDOW=229 RES=0x00 ACK RST URGP=0 OPT (0101080A0000000001189425)
+</code></pre><p>解释说明:</p>
+<p>mangle:XXX    //哪张表的哪个规则<br>IN=enp0s3     //接收interface<br>OUT=            //出去interface<br>MAC=08:00:27:45:5a:f5:08:00:27:56:8a:c4:08:00  //src mac: 08:00:27:56:8a:c4 -&gt; dst mac: 08:00:27:45:5a:f5<br>SRC=172.16.0.8 DST=172.16.0.11    //src and dst ip.  </p>
+<!--
+#### 问题/目标
+#### 架构/思路
+#### 解决
+#### 分析
+-->
 
           
         
@@ -434,7 +469,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/04/lvs_cluster_localnode/">
+    <link itemprop="mainEntityOfPage" href="http://jiangyu86.cn/2018/03/12/cluster/lvs_normal_nat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WolfJ">
@@ -453,7 +488,441 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/04/lvs_cluster_localnode/" itemprop="url">LVS：LocalNode / Two Box LVS / LVS集成模式配置与原理详解</a></h1>
+                <a class="post-title-link" href="/2018/03/12/cluster/lvs_normal_nat/" itemprop="url">Centos7 LVS+Keepalived 实现负载/高可用之 NAT独立部署及详解</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-12T11:06:00+08:00">2018-03-12</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁的表妹LVS负载。</p>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>Centos7.3 Minimal版(干净)<br>ipvsadm，负载模块<br>keepalived，高可用模块<br>nginx 应用服务模块  </p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>给出架构图:<br><img src="/2018/03/12/cluster/lvs_normal_nat/nat.png" alt="lvs keepalived nat"><br>Director节点ipvsadm模块，承担LVS的负载调度能力.<br>Director节点keepalived模块，负责VRRP的配置，对故障处理(Failover)实现LVS的高可用.<br>RealServer部署自己的服务应用(apache,nginx,tomcat…)，此处选择nginx.   </p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>未完待续，敬请期待</p>
+<h2 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h2>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jiangyu86.cn/2018/03/08/cluster/lvs_normal_dr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WolfJ">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WolfJ">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/08/cluster/lvs_normal_dr/" itemprop="url">Centos7 LVS+Keepalived 实现负载/高可用之 DR 独立部署及详解</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-08T15:06:00+08:00">2018-03-08</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/技术/" itemprop="url" rel="index"><span itemprop="name">技术</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁的表妹LVS负载。</p>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>Centos7.3 Minimal版(干净)<br>ipvsadm，负载模块<br>keepalived，高可用模块<br>nginx 应用服务模块  </p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>给出架构图:<br><img src="/2018/03/08/cluster/lvs_normal_dr/dr.png" alt="lvs keepalived dr"><br>Director节点ipvsadm模块，承担LVS的负载调度能力.<br>Director节点keepalived模块，负责VRRP的配置，对故障处理(Failover)实现LVS的高可用.<br>RealServer部署自己的服务应用(apache,nginx,tomcat…)，此处选择nginx.   </p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="设备安装基础软件"><a href="#设备安装基础软件" class="headerlink" title="设备安装基础软件"></a>设备安装基础软件</h3><p>Centos7 采用epel源安装相关软件及依赖</p>
+<pre><code>wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm   
+rpm -ivh epel-release-latest-7.noarch.rpm   
+</code></pre><p>两台Director设备(主/备)，安装ipvsadm，keepalived 开机启动/启动服务</p>
+<pre><code>yum install -y keepalived  
+yum install -y ipvsadm  
+
+#启动时需要一个空文件，否则异常
+touch /etc/sysconfig/ipvsadm 
+systemctl enable ipvsadm
+systemctl start ipvsadm
+
+systemctl enable keepalived
+systemctl start keepalived
+</code></pre><p>两台Director设备 SELinux关闭(否则keepalived启动异常):  </p>
+<pre><code># SELinux disable
+setenforce 0
+getenforce
+# 永久生效: vi /etc/selinux/config
+SELINUX=disabled
+</code></pre><p>两台RealServer设备 安装nginx</p>
+<pre><code>yum install -y nginx  
+
+systemctl enable nginx
+systemctl start nginx
+
+#设备A 更新nginx首页，区分服务
+echo &apos;nginx a&apos; &gt; /usr/share/nginx/html/index.html
+#设备B 更新nginx首页，区分服务
+echo &apos;nginx b&apos; &gt; /usr/share/nginx/html/index.html    
+</code></pre><p>每台设备添加防火墙端口(如果启动用firewalld，也可关闭防火墙服务)</p>
+<pre><code>firewall-cmd --add-port=80/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --list-ports
+</code></pre><h3 id="Director设备上配置keepalived"><a href="#Director设备上配置keepalived" class="headerlink" title="Director设备上配置keepalived"></a>Director设备上配置keepalived</h3><p>在Director设备上配置keepalived，先后配置主/备、权重、IP负载均衡技术、调度算法、监听IP，负载IP等信息。</p>
+<p>Director设备 Master 配置，编辑配置文件 <code>vi /etc/keepalived/keepalived.conf</code></p>
+<pre><code>global_defs {
+   router_id LVS_DEVEL
+}
+vrrp_instance VI_1 {
+    state MASTER
+    interface enp0s3
+    virtual_router_id 51
+    priority 100
+    advert_int 1
+       authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        172.16.0.30/24
+    }
+}
+virtual_server 172.16.0.30 80 {
+    delay_loop 6
+    lb_algo rr
+    lb_kind DR
+    persistence_timeout 0
+    protocol TCP
+
+    real_server 172.16.0.31 80 {
+        TCP_CHECK {
+            connect_timeout 3
+        }
+    }
+    real_server 172.16.0.32 80 {
+        TCP_CHECK {
+            connect_timeout 3
+        }
+    }
+}
+</code></pre><p>Director设备 Backup 与设备 Master 基本一致，差异如下：</p>
+<pre><code>vrrp_instance VI_1 {
+    state BACKUP
+    priority 50
+    ...
+}
+</code></pre><h3 id="设备上配置VIP-VRRP规则"><a href="#设备上配置VIP-VRRP规则" class="headerlink" title="设备上配置VIP/VRRP规则"></a>设备上配置VIP/VRRP规则</h3><p>Director设备的VIP已经由Keepalived配置文件中配置好了，重新启动下keepalived模块即可: <code>systemctl restart keepalived</code>。<br>Director设备仍需要设置防火墙VRRP接收规则，允许两台设置的keepalived之间通信，实现主/备切换</p>
+<pre><code># 指定keepalived配置的网卡：enp0s3，固定的VRRP广播地址：224.0.0.18
+firewall-cmd --direct --permanent --add-rule ipv4 filter INPUT 0 --in-interface enp0s3 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
+firewall-cmd --direct --permanent --add-rule ipv4 filter OUTPUT 0 --out-interface enp0s3 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
+firewall-cmd --reload
+</code></pre><p>RealServer配置VIP，用于接收目标是VIP的网络包</p>
+<p>新建一个脚本 lvs-web.sh: <code>vi /etc/init.d/lvs-web.sh</code>  </p>
+<pre><code>#!/bin/sh
+VIP=172.16.0.30
+. /etc/rc.d/init.d/functions
+
+case &quot;$1&quot; in
+
+start)
+    /sbin/ifconfig lo down
+    /sbin/ifconfig lo up
+    echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
+    echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
+    echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
+    echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+    /sbin/sysctl -p &gt;/dev/null 2&gt;&amp;1
+    /sbin/ifconfig lo:0 $VIP netmask 255.255.255.255 up   
+    /sbin/route add -host $VIP dev lo:0
+    echo &quot;LVS-DR real server starts successfully.\n&quot;
+    ;;
+stop)
+    /sbin/ifconfig lo:0 down
+    /sbin/route del $VIP &gt;/dev/null 2&gt;&amp;1
+    echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore
+    echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_announce
+    echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_ignore
+    echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_announce
+    echo &quot;LVS-DR real server stopped.\n&quot;
+    ;;
+status)
+    isLoOn=`/sbin/ifconfig lo:0 | grep &quot;$VIP&quot;`
+    isRoOn=`/bin/netstat -rn | grep &quot;$VIP&quot;`
+    if [ &quot;$isLoON&quot; == &quot;&quot; -a &quot;$isRoOn&quot; == &quot;&quot; ]; then
+        echo &quot;LVS-DR real server has run yet.&quot;
+    else
+        echo &quot;LVS-DR real server is running.&quot;
+    fi
+    exit 3
+    ;;
+*)
+    echo &quot;Usage: $0 {start|stop|status}&quot;
+    exit 1
+esac
+exit 0
+</code></pre><p>依赖脚本权限：<code>chmod +x /etc/rc.d/init.d/functions</code><br>使用：<code>sh /etc/init.d/lvs-web.sh start|stop|status</code></p>
+<p>至此，完成所有配置，享受短暂的成功喜悦吧：）</p>
+<h3 id="如何排查问题"><a href="#如何排查问题" class="headerlink" title="如何排查问题"></a>如何排查问题</h3><p>点击<a href="">Linux下如何排查问题</a></p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>DR模式下，请求的包流向是怎么走的？<br>在Director设备上请求VIP会怎么样？<br>在RealServer设备上请求VIP会怎么样？  </p>
+<h4 id="在Director设备上请求VIP会怎么样？"><a href="#在Director设备上请求VIP会怎么样？" class="headerlink" title="在Director设备上请求VIP会怎么样？"></a>在Director设备上请求VIP会怎么样？</h4><p>独立部署时，在director设备上作为Client发起请求是怪异的做法，最多是在RealServer上作为Client发起请求，如果存在，发现不能正常的收到响应的包。</p>
+<h2 id="补充知识点"><a href="#补充知识点" class="headerlink" title="补充知识点"></a>补充知识点</h2><ul>
+<li>How LVS-DR works</li>
+<li>LVS clients on Realservers?</li>
+<li>Handling the arp problem for LVS-DR</li>
+<li>6.8.2.masquerade the service(s) for the realservers</li>
+<li>6.8.3. add a default route for packets from the primary IP on the outside of the director</li>
+</ul>
+<ul>
+<li>rewriting, re-mapping, translating ports with iptables in LVS-DR</li>
+</ul>
+<p>With LVS-NAT you can rewrite ports: <code>/sbin/ipvsadm -a -t VIP:http -r RIP:9999 -m -w 1</code>  <a href="http://www.austintek.com/LVS/LVS-HOWTO/HOWTO/LVS-HOWTO.LVS-NAT.html#re-mapping_ports_lvs_nat" target="_blank" rel="noopener">see Re-mapping ports with LVS-NAT</a></p>
+<p>However, LVS-DR and LVS-Tun just forward the packets to the realserver without rewriting the ports. You can still rewrite the ports at the realserver with <strong>iptables</strong> allowing the realserver to listen on another port.</p>
+<pre><code>/sbin/iptables -t nat -A PREROUTING -d VIP -p tcp -m tcp --dport 80 -j DNAT --to-destination VIP:9999
+</code></pre><h4 id="LVS-clients-on-Realservers"><a href="#LVS-clients-on-Realservers" class="headerlink" title="LVS clients on Realservers"></a>LVS clients on Realservers</h4><h2 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h2><p><a href="http://zh.linuxvirtualserver.org/node/2585" target="_blank" rel="noopener">LVS/DR模式原理剖析</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://jiangyu86.cn/2018/03/04/cluster/lvs_localnode_dr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WolfJ">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WolfJ">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/04/cluster/lvs_localnode_dr/" itemprop="url">两台机器 Centos7 LVS+Keepalived 实现负载/高可用之 DR 集成部署(LocalNode/Two Box)及原理详解</a></h1>
         
 
         <div class="post-meta">
@@ -522,19 +991,19 @@
       
         
           
-            <h2 id="LVS：LocalNode"><a href="#LVS：LocalNode" class="headerlink" title="LVS：LocalNode"></a>LVS：LocalNode</h2><p>LVS经典部署场景是Director服务器与RealServer服务器分开部署，独立服务器，一来是为了充分利用硬件性能，二来是为了避免故障相互影响。<br>然而某些时候会把Director与RealServer视为一个软件模块部署在同一台服务器上，用两台服务器部署两套软件，实现负载与高可用。  </p>
+            <h2 id="介绍-LVS：LocalNode"><a href="#介绍-LVS：LocalNode" class="headerlink" title="介绍 LVS：LocalNode"></a>介绍 LVS：LocalNode</h2><p>LVS经典部署场景是Director服务器与RealServer服务器分开部署，独立服务器，一来是为了充分利用硬件性能，二来是为了避免故障相互影响。<br>然而某些时候会把Director与RealServer视为一个软件模块部署在同一台服务器上，用两台服务器部署两套软件，实现负载与高可用。  </p>
 <h3 id="Two-Box-LVS"><a href="#Two-Box-LVS" class="headerlink" title="Two Box LVS"></a>Two Box LVS</h3><p>仅在两台设备上同样可以完整的实现LVS的故障处理。其中一台设备承担了Director的角色，同时也承担了RealServer的角色。另一台设备是真实服务器。两台设备运行故障处理的代码，允许切换另一台设备为Director角色。两台设备是即实现Director，又有RealServer故障保护功能的最少设备方案了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">It&apos;s possible to have a fully failover LVS with just two boxes. The machine which is acting as director, also is acting as a realserver using localnode. The second box is a normal realserver. The two boxes run failover code to allow them to swap roles as directors. The two box machine is the minimal setup for an LVS with both director and realserver functions protected by failover.</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#引用自HOWTO</span><br><span class="line">It&apos;s possible to have a fully failover LVS with just two boxes. The machine which is acting as director, also is acting as a realserver using localnode. The second box is a normal realserver. The two boxes run failover code to allow them to swap roles as directors. The two box machine is the minimal setup for an LVS with both director and realserver functions protected by failover.</span><br></pre></td></tr></table></figure>
 <p>注意：此方案是在内核版本2.6之后，之前也有相应的补丁，具体参见<a href="">LVS-HOWTO</a>文章。</p>
-<h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><p><img src="/2018/03/04/lvs_cluster_localnode/two-box-lvs-architecture.png" alt="two-box-lvs-architecture"></p>
-<h4 id="集成部署的问题"><a href="#集成部署的问题" class="headerlink" title="集成部署的问题"></a>集成部署的问题</h4><p>如果集成部署时，仍按照独立方案的配置来，会存在50%的问题  </p>
+<h3 id="集成部署的问题"><a href="#集成部署的问题" class="headerlink" title="集成部署的问题"></a>集成部署的问题</h3><p>如果集成部署时，仍按照独立方案的配置来，会存在50%的问题  </p>
 <ul>
 <li>client 发请求包给 master director</li>
 <li>50% 机会 master 把包转给 backup （因为 backup 同时也是 RealServer）</li>
 <li>因为 backup 的 LVS rules 已经启用，所以50%机会 backup 把包转给 master</li>
 <li>master 收到包后，又可能把包转给 backup，然后陷入死循环。 </li>
 </ul>
-<h3 id="解决问题实现思路"><a href="#解决问题实现思路" class="headerlink" title="解决问题实现思路"></a>解决问题实现思路</h3><p>在两台机器上实现LVS有以下几种思路可以实现：  </p>
+<h2 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h2><p><img src="/2018/03/04/cluster/lvs_localnode_dr/two-box-lvs-architecture.png" alt="two-box-lvs-architecture"></p>
+<h2 id="解决实现思路"><a href="#解决实现思路" class="headerlink" title="解决实现思路"></a>解决实现思路</h2><p>在两台机器上实现LVS有以下几种思路可以实现：  </p>
 <ul>
 <li><p>方案一：对网络包打Mark<br>通过iptables对收到的网络包(packets)打Mark。  </p>
 </li>
@@ -543,9 +1012,9 @@
 <li><p>方案三：sysctl flag backup_only<br>有人提到在 kernel 3.9+ 上，新增了一个 flag: backup_only=1，解决这个问题。但未尝试，不太清楚如果主备切换，flag 怎么做。</p>
 </li>
 </ul>
-<h3 id="网络包流向介绍"><a href="#网络包流向介绍" class="headerlink" title="网络包流向介绍"></a>网络包流向介绍</h3><p>在此之前先介绍一下网络数据包进入操作系统后的数据流向，了解了内核原理，就能很自然的明白两种思路及其实现了。</p>
-<p>Netfilter-packet-flow 数据包流向<br><img src="/2018/03/04/lvs_cluster_localnode/Netfilter-packet-flow.jpg" alt="packet-flow-in-netfilter"></p>
-<p>Netfilter-packet-flow 数据包流向(详细)<br><img src="/2018/03/04/lvs_cluster_localnode/Netfilter-rule-flow.png" alt="packet-flow-in-netfilter(详细)"></p>
+<h2 id="网络包流向介绍"><a href="#网络包流向介绍" class="headerlink" title="网络包流向介绍"></a>网络包流向介绍</h2><p>在此之前先介绍一下网络数据包进入操作系统后的数据流向，了解了内核原理，就能很自然的明白两种思路及其实现了。</p>
+<p>Netfilter-packet-flow 数据包流向<br><img src="/2018/03/04/cluster/lvs_localnode_dr/Netfilter-packet-flow.jpg" alt="packet-flow-in-netfilter"></p>
+<p>Netfilter-packet-flow 数据包流向(详细)<br><img src="/2018/03/04/cluster/lvs_localnode_dr/Netfilter-rule-flow.png" alt="packet-flow-in-netfilter(详细)"></p>
 <!-- 111 -->
 <p>网络数据包在LVS Director设备中的流向</p>
 <ol>
@@ -555,10 +1024,10 @@
 <li>根据负载技术和调度算法，更改包的目标地址(to RealServer)</li>
 <li>出netfilter的OUTPUT规则链</li>
 </ol>
-<h3 id="一方案：对网络包标记Mark"><a href="#一方案：对网络包标记Mark" class="headerlink" title="一方案：对网络包标记Mark"></a>一方案：对网络包标记Mark</h3><h4 id="方案思路"><a href="#方案思路" class="headerlink" title="方案思路"></a>方案思路</h4><p>两台设备相同的架构，当设备接收到请求包，在入口处做标识，区分出是正常请求，还是来自于Director的转发请求。如果是正常请求，则进入转发模块，根据调度策略，转给本设备或另一台设备处理；如果是转发请求，则不需要再进入本设备转发模块了，直接交由RealServer处理。</p>
-<h4 id="标记Mark的原理图"><a href="#标记Mark的原理图" class="headerlink" title="标记Mark的原理图"></a>标记Mark的原理图</h4><p><img src="/2018/03/04/lvs_cluster_localnode/introduce-lvs-mark.png" alt="打Mark的原理图">  </p>
+<h2 id="一方案：对网络包标记Mark"><a href="#一方案：对网络包标记Mark" class="headerlink" title="一方案：对网络包标记Mark"></a>一方案：对网络包标记Mark</h2><h3 id="方案思路"><a href="#方案思路" class="headerlink" title="方案思路"></a>方案思路</h3><p>两台设备相同的架构，当设备接收到请求包，在入口处做标识，区分出是正常请求，还是来自于Director的转发请求。如果是正常请求，则进入转发模块，根据调度策略，转给本设备或另一台设备处理；如果是转发请求，则不需要再进入本设备转发模块了，直接交由RealServer处理。</p>
+<h3 id="标记Mark的原理图"><a href="#标记Mark的原理图" class="headerlink" title="标记Mark的原理图"></a>标记Mark的原理图</h3><p><img src="/2018/03/04/cluster/lvs_localnode_dr/introduce-lvs-mark.png" alt="打Mark的原理图">  </p>
 <p>客户端向VIP发出请求或者另设备负载分流请求时，本设备接收到请求，经过防火墙的INPUT过滤模块，mark标记规则：不是来自于另一设备的分流请求就标记mark=3，从另一设备网卡的MAC地址出来的分流请求则不作标记。<br>&emsp;&emsp;监控在enp0s3上负载模块，监控条件也改为mark判断，满足mark=3的包，才进入负载模块，不满足的就跳过负载模块。<br>&emsp;&emsp;进入负载模块的包，会受调度算法，其它参数配置等影响，可能转向本地的IP地址和端口，从而被本设备的RealServer处理，也可能转向另一设备的IP地址和端口，进而跳出本设备。<br>&emsp;&emsp;不进入负载模块的包，因为请求包的目标是VIP，lo上也配置了VIP地址，所以网络包经过了enp0s3后还会被lo的网卡接收到，从而进入用户空间的RealServer模块，处理完后转出本设备。</p>
-<h4 id="详细配置"><a href="#详细配置" class="headerlink" title="详细配置"></a>详细配置</h4><h4 id="集成部署配置步骤"><a href="#集成部署配置步骤" class="headerlink" title="集成部署配置步骤"></a>集成部署配置步骤</h4><ol>
+<h3 id="配置步骤详解"><a href="#配置步骤详解" class="headerlink" title="配置步骤详解"></a>配置步骤详解</h3><ol>
 <li>两台设备上安装基础软件</li>
 <li>两台设备上设置Mark规则</li>
 <li>两台设备上配置keepalived </li>
@@ -568,7 +1037,7 @@
 先后配置主/备、权重、IP负载均衡技术、调度算法、虚拟服务，负载IP等信息、、、、
 用于接收目标是VIP的网络包，交由服务应用处理
 -->
-<h5 id="安装基础软件"><a href="#安装基础软件" class="headerlink" title="安装基础软件"></a>安装基础软件</h5><p>Centos7.3-minimal，通过epel源安装基础软件: </p>
+<h4 id="安装基础软件"><a href="#安装基础软件" class="headerlink" title="安装基础软件"></a>安装基础软件</h4><p>Centos7.3-minimal，通过epel源安装基础软件: </p>
 <pre><code>wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm   
 rpm -ivh epel-release-latest-7.noarch.rpm   
 yum install -y keepalived  
@@ -581,7 +1050,7 @@ VIP: 172.16.0.30
 #设备B
 RIP: 172.16.0.32  interface: enp0s3
 VIP: 172.16.0.30    
-</code></pre><p>启用服务/开机启动/防火墙设置/SELinux关闭:  </p>
+</code></pre><p>开机启动/启动服务/防火墙端口/SELinux关闭:  </p>
 <pre><code>touch /etc/sysconfig/ipvsadm 
 systemctl enable ipvsadm
 systemctl start ipvsadm
@@ -606,7 +1075,7 @@ SELINUX=disabled
 echo &apos;nginx a&apos; &gt; /usr/share/nginx/html/index.html
 #设备B 更新nginx首页
 echo &apos;nginx b&apos; &gt; /usr/share/nginx/html/index.html    
-</code></pre><h5 id="设置Mark规则"><a href="#设置Mark规则" class="headerlink" title="设置Mark规则"></a>设置Mark规则</h5><p>Director A 配置 iptables ，除了 Director B 以外的包，都标记 mark 为3</p>
+</code></pre><h4 id="设置Mark规则"><a href="#设置Mark规则" class="headerlink" title="设置Mark规则"></a>设置Mark规则</h4><p>Director A 配置 iptables ，除了 Director B 以外的包，都标记 mark 为3</p>
 <pre><code># iptables  -t mangle -I PREROUTING -d $VIP -p tcp -m tcp --dport $VPORT -m mac ! --mac-source $MAC_Director_B -j MARK --set-mark 0x3 
 iptables  -t mangle -I PREROUTING -d 172.16.0.30 -p tcp -m tcp --dport 80 -m mac ! --mac-source 08:00:27:E1:3C:C5 -j MARK --set-mark 0x3
 </code></pre><p>Director B 配置 iptables ，除了 Director A 以外的包，都标记 mark 为4</p>
@@ -614,7 +1083,7 @@ iptables  -t mangle -I PREROUTING -d 172.16.0.30 -p tcp -m tcp --dport 80 -m mac
 iptables  -t mangle -I PREROUTING -d 172.16.0.30 -p tcp -m tcp --dport 80 -m mac ! --mac-source 08:00:27:77:84:EF -j MARK --set-mark 0x4
 </code></pre><p> 查看已经设置的规则</p>
 <pre><code>iptables -vL -t mangle
-</code></pre><h5 id="配置keepalived"><a href="#配置keepalived" class="headerlink" title="配置keepalived"></a>配置keepalived</h5><p>设备A(Master)配置如下：<br><code>vi /etc/keepalived/keepalived.conf</code></p>
+</code></pre><h4 id="配置keepalived"><a href="#配置keepalived" class="headerlink" title="配置keepalived"></a>配置keepalived</h4><p>设备A(Master)配置如下：<br><code>vi /etc/keepalived/keepalived.conf</code></p>
 <pre><code>global_defs {
    router_id LVS_DEVEL
 }
@@ -660,14 +1129,14 @@ virtual_server fwmark 3 {
 virtual_server fwmark 4 {
     ...
 }
-</code></pre><h5 id="配置VIP-VRRP规则"><a href="#配置VIP-VRRP规则" class="headerlink" title="配置VIP/VRRP规则"></a>配置VIP/VRRP规则</h5><p>enp0s3 上的VIP已经由keepalived模块配置好了，不需要我们多做设置，只需要将 lo 上的VIP配置好即可。<br>两台设备上都创建此文件 <code>vi /etc/sysconfig/network-scripts/ifcfg-lo:0</code></p>
+</code></pre><h4 id="配置VIP-VRRP规则"><a href="#配置VIP-VRRP规则" class="headerlink" title="配置VIP/VRRP规则"></a>配置VIP/VRRP规则</h4><p>enp0s3 上的VIP已经由keepalived模块配置好了，不需要我们多做设置，只需要将 lo 上的VIP配置好即可。<br>两台设备上都创建此文件 <code>vi /etc/sysconfig/network-scripts/ifcfg-lo:0</code></p>
 <pre><code>DEVICE=lo:0
 IPADDR=172.16.0.30
 NETMASK=255.255.255.255
 ONBOOT=yes
 NAME=loopback
 </code></pre><p>修改文件 <code>vi /etc/sysctl.conf</code> 添加以下内容 </p>
-<pre><code># 配有VIP的网卡enp0s3忽略arp包，让lo处理
+<pre><code># 限制外部网络接口enp0s3的arp包
 net.ipv4.conf.enp0s3.arp_ignore = 1 
 net.ipv4.conf.enp0s3.arp_announce = 2 
 # 允许包转发 
@@ -680,21 +1149,21 @@ sysctl -p
 firewall-cmd --direct --permanent --add-rule ipv4 filter INPUT 0 --in-interface enp0s3 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
 firewall-cmd --direct --permanent --add-rule ipv4 filter OUTPUT 0 --out-interface enp0s3 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
 firewall-cmd --reload
-</code></pre><h3 id="二方案：设置Netfilter规则"><a href="#二方案：设置Netfilter规则" class="headerlink" title="二方案：设置Netfilter规则"></a>二方案：设置Netfilter规则</h3><h4 id="方案思路-1"><a href="#方案思路-1" class="headerlink" title="方案思路"></a>方案思路</h4><p>50%的问题是因为网络包进入了两台设备的Director模块。那能不能让网络包不进入两台设备的Director模块，只进某一台设备Director模块呢？Master角色的这台设备肯定会承担所有的网络包入口，Backup角色的这台设备只承担了Master分流过来的网络包请求，Backup的设备在收到网络包，在转入Director模块之前，添加一个规则，让网络包跳过Director模块，直接转到用户空间的RealServer模块处理，这样就不会有50%的问题存在了。</p>
-<h4 id="方案原理图"><a href="#方案原理图" class="headerlink" title="方案原理图"></a>方案原理图</h4><p>Master角色设备的包流向原理图：<br><img src="/2018/03/04/lvs_cluster_localnode/introduce-lvs-netfilter-1.png" alt="netfilter原理图">   </p>
-<p>Backup角色设备的包流向原理图：<br><img src="/2018/03/04/lvs_cluster_localnode/introduce-lvs-netfilter-2.png" alt="netfilter原理图">  </p>
+</code></pre><h2 id="二方案：设置Netfilter规则"><a href="#二方案：设置Netfilter规则" class="headerlink" title="二方案：设置Netfilter规则"></a>二方案：设置Netfilter规则</h2><h3 id="方案思路-1"><a href="#方案思路-1" class="headerlink" title="方案思路"></a>方案思路</h3><p>50%的问题是因为网络包进入了两台设备的Director模块。那能不能让网络包不进入两台设备的Director模块，只进某一台设备Director模块呢？Master角色的这台设备肯定会承担所有的网络包入口，Backup角色的这台设备只承担了Master分流过来的网络包请求，Backup的设备在收到网络包，在转入Director模块之前，添加一个规则，让网络包跳过Director模块，直接转到用户空间的RealServer模块处理，这样就不会有50%的问题存在了。</p>
+<h3 id="方案原理图"><a href="#方案原理图" class="headerlink" title="方案原理图"></a>方案原理图</h3><p>Master角色设备的包流向原理图：<br><img src="/2018/03/04/cluster/lvs_localnode_dr/introduce-lvs-netfilter-1.png" alt="netfilter原理图">   </p>
+<p>Backup角色设备的包流向原理图：<br><img src="/2018/03/04/cluster/lvs_localnode_dr/introduce-lvs-netfilter-2.png" alt="netfilter原理图">  </p>
 <p>Keepalived的脚本负责维护netfilter中INPUT的规则，根据设备的角色，执行相应的脚本来设置规则或是清理规则。<br>当角色为Master时，清除掉规则，所有请求VIP的包，都正常的被LVS的内核模块监听接收处理，按算法或参数，交由本设备的RealServer处理，或是转至另一台设备处理。<br>当角色为Backup时，添加规则，所有请求VIP的包，将被强制Redirect至本设备的RealServer处理，处理完后，再转出本设备。<br>我们会发现这种方法更加简单，高效些。</p>
-<h4 id="集成部署设置步骤"><a href="#集成部署设置步骤" class="headerlink" title="集成部署设置步骤"></a>集成部署设置步骤</h4><ol>
+<h3 id="配置步骤详解-1"><a href="#配置步骤详解-1" class="headerlink" title="配置步骤详解"></a>配置步骤详解</h3><ol>
 <li>两台设备上安装基础软件  </li>
 <li>两台设备上准备脚本  </li>
 <li>两台设备上配置keepalived  </li>
 <li>两台设备上配置VIP/VRRP规则  </li>
 </ol>
-<h4 id="详细配置-1"><a href="#详细配置-1" class="headerlink" title="详细配置"></a>详细配置</h4><h5 id="基础安装软件"><a href="#基础安装软件" class="headerlink" title="基础安装软件"></a>基础安装软件</h5><p>与方案一相同.  </p>
-<h5 id="准备脚本"><a href="#准备脚本" class="headerlink" title="准备脚本"></a>准备脚本</h5><p>下载<a href="bypass_ipvs.sh">bypass_ipvs.sh</a>脚本文件，放于目录<code>/etc/keepalived/</code>中。</p>
+<h4 id="基础安装软件"><a href="#基础安装软件" class="headerlink" title="基础安装软件"></a>基础安装软件</h4><p>与方案一相同.  </p>
+<h4 id="准备脚本"><a href="#准备脚本" class="headerlink" title="准备脚本"></a>准备脚本</h4><p>下载<a href="bypass_ipvs.sh">bypass_ipvs.sh</a>脚本文件，放于目录<code>/etc/keepalived/</code>中。</p>
 <pre><code># 加执行权限
 chmod +x /etc/keepalived/bypass_ipvs.sh
-</code></pre><h5 id="配置keepalived-1"><a href="#配置keepalived-1" class="headerlink" title="配置keepalived"></a>配置keepalived</h5><p>设备A (Master)的配置<br><code>vi /etc/keepalived/keepalived.conf</code></p>
+</code></pre><h4 id="配置keepalived-1"><a href="#配置keepalived-1" class="headerlink" title="配置keepalived"></a>配置keepalived</h4><p>设备A (Master)的配置<br><code>vi /etc/keepalived/keepalived.conf</code></p>
 <pre><code>global_defs {
    router_id LVS_DEVEL
 }
@@ -742,7 +1211,7 @@ virtual_server 172.16.0.30 80 {
     priority 50
     ...
 }
-</code></pre><h5 id="配置VIP-VRRP规则-1"><a href="#配置VIP-VRRP规则-1" class="headerlink" title="配置VIP / VRRP规则"></a>配置VIP / VRRP规则</h5><p>enp0s3 上的VIP已经由keepalived模块配置好了，不需要我们多做设置。也不需要设置lo的VIP。</p>
+</code></pre><h4 id="配置VIP-VRRP规则-1"><a href="#配置VIP-VRRP规则-1" class="headerlink" title="配置VIP / VRRP规则"></a>配置VIP / VRRP规则</h4><p>enp0s3 上的VIP已经由keepalived模块配置好了，不需要我们多做设置。也不需要设置lo的VIP。</p>
 <p>修改文件 <code>vi /etc/sysctl.conf</code> 添加以下内容 </p>
 <pre><code># 允许包转发 
 net.ipv4.ip_forward = 1
@@ -753,11 +1222,12 @@ net.ipv4.ip_forward = 1
 firewall-cmd --direct --permanent --add-rule ipv4 filter INPUT 0 --in-interface enp0s3 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
 firewall-cmd --direct --permanent --add-rule ipv4 filter OUTPUT 0 --out-interface enp0s3 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
 firewall-cmd --reload
-</code></pre><h4 id="补充说明"><a href="#补充说明" class="headerlink" title="补充说明"></a>补充说明</h4><p>享受成功的喜悦吧：）</p>
+</code></pre><h3 id="补充说明"><a href="#补充说明" class="headerlink" title="补充说明"></a>补充说明</h3><p>享受成功的喜悦吧：）</p>
 <p>多亏了nat规则，我们成功的在两台机器上搭建了负载匀衡和自动故障处理配置。采用这种架构可以完全的最高效的使用可使用的资源。一台设备承担了负载和RealServer角色，当发现这台设备故障时，另一台可以快速切换为负载和RealServer角色。备份设备不仅检查Master设备的状态，同样也处理从负载分发过来的请求。</p>
 <p>Keep in mind that the request distribution is not strictly made on a connection basis. The clients connect to one of the realserver going through the VIP. Once this is done and as soon as the realserver in question is available,  further requests will be forwarded to the same realserver. In a classical scenario, many clients connect to the VIP, thus the global amount of requests is equally distributed between the two nodes.</p>
-<h3 id="调试排错"><a href="#调试排错" class="headerlink" title="调试排错"></a>调试排错</h3><p>如有需要，随后附上调试排错的方法，和详细步骤。<br>例如：<br>在测试过程中，客户端一直没有响应？<br>或者为什么请求一直不进入负载模块，等。。。？  </p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://kb.linuxvirtualserver.org/wiki/Building_Two-Node_Directors/Real_Servers_using_LVS_and_Keepalived" target="_blank" rel="noopener">Building Two-Node Directors/Real Servers using LVS and Keepalived</a>  </p>
+<h2 id="调试排错"><a href="#调试排错" class="headerlink" title="调试排错"></a>调试排错</h2><p>例如：<br>在测试过程中，客户端一直没有响应？<br>或者为什么请求一直不进入负载模块，等。。。？  </p>
+<p>点击<a href="/2018/03/16/cluster/lvs_diagnose/">Linux/Centos7 下排查集群环境问题方法</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://kb.linuxvirtualserver.org/wiki/Building_Two-Node_Directors/Real_Servers_using_LVS_and_Keepalived" target="_blank" rel="noopener">Building Two-Node Directors/Real Servers using LVS and Keepalived</a>  </p>
 <p><a href="http://linbo.github.io/2017/08/20/lvs-dr" target="_blank" rel="noopener">LVS DR模式的一些问题</a>  </p>
 <p><a href="http://gcharriere.com/blog/?p=339" target="_blank" rel="noopener">Failover and loadbalancer using keepalived (LVS) on two machines -ok</a>  </p>
 <p><a href="https://www.jianshu.com/p/734640384fda" target="_blank" rel="noopener">Linux内核参数之arp_ignore和arp_announce</a></p>
@@ -814,7 +1284,7 @@ firewall-cmd --reload
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/04/lvs_cluster_solution/">
+    <link itemprop="mainEntityOfPage" href="http://jiangyu86.cn/2018/03/04/cluster/lvs_solution/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WolfJ">
@@ -833,7 +1303,7 @@ firewall-cmd --reload
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/04/lvs_cluster_solution/" itemprop="url">Linux服务器集群方案介绍-(nginx/lvs)</a></h1>
+                <a class="post-title-link" href="/2018/03/04/cluster/lvs_solution/" itemprop="url">Linux服务器集群方案介绍之 nginx，lvs</a></h1>
         
 
         <div class="post-meta">
@@ -918,18 +1388,9 @@ firewall-cmd --reload
 <p>1.2 DR模式<br>未尝试  </p>
 <h4 id="LocalNode-两台负载负载-多真实服务器"><a href="#LocalNode-两台负载负载-多真实服务器" class="headerlink" title="LocalNode+两台负载负载+多真实服务器"></a>LocalNode+两台负载负载+多真实服务器</h4><p>lvs + keepalived 两台负载调度器，集成在某两台真实服务器中，实现负载及高可用。<br>2.1 NAT模式<br>未尝试</p>
 <p>2.2 DR模式<br><strong>参考连接：</strong><br><a href="http://kb.linuxvirtualserver.org/wiki/Building_Two-Node_Directors/Real_Servers_using_LVS_and_Keepalived" target="_blank" rel="noopener">Building Two-Node Directors/Real Servers using LVS and Keepalived</a><br><a href="http://linbo.github.io/2017/08/20/lvs-dr" target="_blank" rel="noopener">LVS DR模式的一些问题</a><br><a href="http://gcharriere.com/blog/?p=339" target="_blank" rel="noopener">Failover and loadbalancer using keepalived (LVS) on two machines -ok</a></p>
-<h3 id="场景图说明"><a href="#场景图说明" class="headerlink" title="场景图说明"></a>场景图说明</h3><p>lvs + keepalived NAT mode:<br><img src="/2018/03/04/lvs_cluster_solution/../images/nat.png" alt="lvs + keepalived NAT模式"></p>
-<p>lvs + keepalived DR mode:<br><img src="/2018/03/04/lvs_cluster_solution/../images/dr.png" alt="lvs + keepalived DR模式"></p>
+<h3 id="场景图说明"><a href="#场景图说明" class="headerlink" title="场景图说明"></a>场景图说明</h3><p>lvs + keepalived NAT mode:<br><img src="/2018/03/04/cluster/lvs_solution/../images/nat.png" alt="lvs + keepalived NAT模式"></p>
+<p>lvs + keepalived DR mode:<br><img src="/2018/03/04/cluster/lvs_solution/../images/dr.png" alt="lvs + keepalived DR模式"></p>
 <h2 id="场景详解"><a href="#场景详解" class="headerlink" title="场景详解"></a>场景详解</h2><p>参见每个具体的场景介绍</p>
-<p>独立部署步骤</p>
-<ul>
-<li>Director节点安装ipvsadm，承担LVS的负载调度能力  </li>
-<li>Director节点安装keepalived，负责VRRP的配置，对故障处理(Failover)实现LVS的高可用</li>
-<li>在Director上配置keepalived，先后配置主/备、权重、IP负载均衡技术、调度算法、监听IP，负载IP等信息、、、、</li>
-<li>RealServer配置VIP，用于接收目标是VIP的网络包</li>
-<li>RealServer部署自己的服务应用(apache,nginx,tomcat…)</li>
-<li>防火墙开启相应端口</li>
-</ul>
 <p>All machines in the LVS have the VIP: only the VIP on the director replies to arp requests, the VIP on the realservers must be on a non-arping device (eg lo:0, dummy).</p>
 <p>详细配置参见<a href="">lvs+keepalived DR</a></p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>发现好些资料都指向了<a href="http://archive.linuxvirtualserver.org/" target="_blank" rel="noopener">archive.linuxvirtualserver.org</a>，但这个网站显示服务器意外中断，以https访问时也显示页面不存在。</p>
@@ -986,7 +1447,7 @@ firewall-cmd --reload
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/01/start/">
+    <link itemprop="mainEntityOfPage" href="http://jiangyu86.cn/2018/03/01/start/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WolfJ">
@@ -1138,7 +1599,7 @@ firewall-cmd --reload
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1184,7 +1645,11 @@ firewall-cmd --reload
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

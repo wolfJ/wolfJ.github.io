@@ -2,49 +2,63 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/2018/03/14/lvs_cluster_normal/</loc>
+    <loc>http://jiangyu86.cn/2018/03/04/cluster/lvs_localnode_dr/</loc>
     
-    <lastmod>2018-03-14T07:21:00.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2018/03/04/lvs_cluster_solution/</loc>
-    
-    <lastmod>2018-03-13T10:24:40.000Z</lastmod>
+    <lastmod>2018-03-16T08:29:20.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite.com/2018/03/04/lvs_cluster_localnode/</loc>
+    <loc>http://jiangyu86.cn/2018/03/16/cluster/lvs_diagnose/</loc>
     
-    <lastmod>2018-03-13T08:03:25.000Z</lastmod>
+    <lastmod>2018-03-16T07:47:12.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite.com/categories/index.html</loc>
+    <loc>http://jiangyu86.cn/2018/03/08/cluster/lvs_normal_dr/</loc>
+    
+    <lastmod>2018-03-16T06:19:58.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jiangyu86.cn/2018/03/12/cluster/lvs_normal_nat/</loc>
+    
+    <lastmod>2018-03-15T09:00:34.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jiangyu86.cn/2018/03/04/cluster/lvs_solution/</loc>
+    
+    <lastmod>2018-03-15T08:56:26.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://jiangyu86.cn/categories/index.html</loc>
     
     <lastmod>2018-03-13T07:56:26.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite.com/tags/index.html</loc>
+    <loc>http://jiangyu86.cn/tags/index.html</loc>
     
     <lastmod>2018-03-13T07:54:44.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite.com/about/index.html</loc>
+    <loc>http://jiangyu86.cn/about/index.html</loc>
     
     <lastmod>2018-03-13T07:47:38.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite.com/2018/03/01/start/</loc>
+    <loc>http://jiangyu86.cn/2018/03/01/start/</loc>
     
     <lastmod>2018-03-13T07:45:33.000Z</lastmod>
     

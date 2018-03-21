@@ -100,27 +100,30 @@
 
 
   
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="linux,lvs,keepalived,vrrp,centos," />
 
 
-<meta name="description" content="参考连接http://zh.linuxvirtualserver.org/node/2585">
+<meta name="description" content="目标LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁的表妹LVS负载。 环境Centos7.3 Minimal版(干净)ipvsadm，负载模块keepalived，高可用模块nginx 应用服务模块   架构给出架构图:Director节点ipvsadm模块，承担LVS的负">
+<meta name="keywords" content="linux,lvs,keepalived,vrrp,centos">
 <meta property="og:type" content="article">
-<meta property="og:title" content="lvs+keepalived集群独立部署配置">
-<meta property="og:url" content="http://yoursite.com/2018/03/14/lvs_cluster_normal/index.html">
+<meta property="og:title" content="Centos7 LVS+Keepalived 实现负载&#x2F;高可用之 NAT独立部署及详解">
+<meta property="og:url" content="http://jiangyu86.cn/2018/03/12/cluster/lvs_normal_nat/index.html">
 <meta property="og:site_name" content="WolfJ">
-<meta property="og:description" content="参考连接http://zh.linuxvirtualserver.org/node/2585">
+<meta property="og:description" content="目标LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁的表妹LVS负载。 环境Centos7.3 Minimal版(干净)ipvsadm，负载模块keepalived，高可用模块nginx 应用服务模块   架构给出架构图:Director节点ipvsadm模块，承担LVS的负">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-03-14T07:21:00.000Z">
+<meta property="og:image" content="http://jiangyu86.cn/2018/03/12/cluster/lvs_normal_nat/nat.png">
+<meta property="og:updated_time" content="2018-03-15T09:00:34.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="lvs+keepalived集群独立部署配置">
-<meta name="twitter:description" content="参考连接http://zh.linuxvirtualserver.org/node/2585">
+<meta name="twitter:title" content="Centos7 LVS+Keepalived 实现负载&#x2F;高可用之 NAT独立部署及详解">
+<meta name="twitter:description" content="目标LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁的表妹LVS负载。 环境Centos7.3 Minimal版(干净)ipvsadm，负载模块keepalived，高可用模块nginx 应用服务模块   架构给出架构图:Director节点ipvsadm模块，承担LVS的负">
+<meta name="twitter:image" content="http://jiangyu86.cn/2018/03/12/cluster/lvs_normal_nat/nat.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/03/14/lvs_cluster_normal/"/>
+  <link rel="canonical" href="http://jiangyu86.cn/2018/03/12/cluster/lvs_normal_nat/"/>
 
 
 
@@ -129,7 +132,7 @@
     sidebar: "",
   };
 </script>
-  <title>lvs+keepalived集群独立部署配置 | WolfJ</title>
+  <title>Centos7 LVS+Keepalived 实现负载/高可用之 NAT独立部署及详解 | WolfJ</title>
   
 
 
@@ -292,7 +295,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/14/lvs_cluster_normal/">
+    <link itemprop="mainEntityOfPage" href="http://jiangyu86.cn/2018/03/12/cluster/lvs_normal_nat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WolfJ">
@@ -309,7 +312,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">lvs+keepalived集群独立部署配置</h1>
+          <h1 class="post-title" itemprop="name headline">Centos7 LVS+Keepalived 实现负载/高可用之 NAT独立部署及详解</h1>
         
 
         <div class="post-meta">
@@ -321,7 +324,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-14T11:06:00+08:00">2018-03-14</time>
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-12T11:06:00+08:00">2018-03-12</time>
             
 
             
@@ -376,8 +379,11 @@
       
 
       
-        <h2 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h2><p><a href="http://zh.linuxvirtualserver.org/node/2585" target="_blank" rel="noopener">http://zh.linuxvirtualserver.org/node/2585</a></p>
-
+        <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁的表妹LVS负载。</p>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>Centos7.3 Minimal版(干净)<br>ipvsadm，负载模块<br>keepalived，高可用模块<br>nginx 应用服务模块  </p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>给出架构图:<br><img src="/2018/03/12/cluster/lvs_normal_nat/nat.png" alt="lvs keepalived nat"><br>Director节点ipvsadm模块，承担LVS的负载调度能力.<br>Director节点keepalived模块，负责VRRP的配置，对故障处理(Failover)实现LVS的高可用.<br>RealServer部署自己的服务应用(apache,nginx,tomcat…)，此处选择nginx.   </p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>未完待续，敬请期待</p>
+<h2 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h2>
       
     </div>
 
@@ -395,6 +401,20 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/lvs/" rel="tag"># lvs</a>
+          
+            <a href="/tags/keepalived/" rel="tag"># keepalived</a>
+          
+            <a href="/tags/vrrp/" rel="tag"># vrrp</a>
+          
+            <a href="/tags/centos/" rel="tag"># centos</a>
+          
+        </div>
+      
 
       
       
@@ -404,8 +424,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/04/lvs_cluster_localnode/" rel="next" title="LVS：LocalNode / Two Box LVS / LVS集成模式配置与原理详解">
-                <i class="fa fa-chevron-left"></i> LVS：LocalNode / Two Box LVS / LVS集成模式配置与原理详解
+              <a href="/2018/03/08/cluster/lvs_normal_dr/" rel="next" title="Centos7 LVS+Keepalived 实现负载/高可用之 DR 独立部署及详解">
+                <i class="fa fa-chevron-left"></i> Centos7 LVS+Keepalived 实现负载/高可用之 DR 独立部署及详解
               </a>
             
           </div>
@@ -413,6 +433,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/16/cluster/lvs_diagnose/" rel="prev" title="Linux/Centos7 下排查集群环境问题方法">
+                Linux/Centos7 下排查集群环境问题方法 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -486,7 +510,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -532,7 +556,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -568,7 +596,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考连接"><span class="nav-number">1.</span> <span class="nav-text">参考连接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目标"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境"><span class="nav-number">1.1.</span> <span class="nav-text">环境</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">2.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署"><span class="nav-number">3.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考连接"><span class="nav-number">4.</span> <span class="nav-text">参考连接</span></a></li></ol></div>
             
 
           </div>

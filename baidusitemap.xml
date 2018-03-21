@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+    
+  <url>
+    <loc>http://jiangyu86.cn/2018/03/04/cluster/lvs_localnode_dr/</loc>
+    <lastmod>2018-03-16T08:29:20.000Z</lastmod>
+    <data>
+        <display>
+        <title>两台机器 Centos7 LVS+Keepalived 实现负载/高可用之 DR 集成部署(LocalNode/Two Box)及原理详解</title>
+        <pubTime>2018-03-04T09:46:00.000Z</pubTime>
+        
+        <tag>lvs</tag>
+         
+        <tag>keepalived</tag>
+         
+        <tag>ipvs</tag>
+         
+        <tag>vrrp</tag>
+         
+        <tag>netfilter</tag>
+         
+        <tag>localnode</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="http://jiangyu86.cn/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://jiangyu86.cn/2018/03/16/cluster/lvs_diagnose/</loc>
+    <lastmod>2018-03-16T07:47:12.000Z</lastmod>
+    <data>
+        <display>
+        <title>Linux/Centos7 下排查集群环境问题方法</title>
+        <pubTime>2018-03-16T06:21:00.000Z</pubTime>
+        
+        <tag>linux</tag>
+         
+        <tag>centos7</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="http://jiangyu86.cn/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://jiangyu86.cn/2018/03/08/cluster/lvs_normal_dr/</loc>
+    <lastmod>2018-03-16T06:19:58.000Z</lastmod>
+    <data>
+        <display>
+        <title>Centos7 LVS+Keepalived 实现负载/高可用之 DR 独立部署及详解</title>
+        <pubTime>2018-03-08T07:06:00.000Z</pubTime>
+        
+        <tag>linux</tag>
+         
+        <tag>lvs</tag>
+         
+        <tag>keepalived</tag>
+         
+        <tag>vrrp</tag>
+         
+        <tag>centos</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="http://jiangyu86.cn/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://jiangyu86.cn/2018/03/12/cluster/lvs_normal_nat/</loc>
+    <lastmod>2018-03-15T09:00:34.000Z</lastmod>
+    <data>
+        <display>
+        <title>Centos7 LVS+Keepalived 实现负载/高可用之 NAT独立部署及详解</title>
+        <pubTime>2018-03-12T03:06:00.000Z</pubTime>
+        
+        <tag>linux</tag>
+         
+        <tag>lvs</tag>
+         
+        <tag>keepalived</tag>
+         
+        <tag>vrrp</tag>
+         
+        <tag>centos</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="http://jiangyu86.cn/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://jiangyu86.cn/2018/03/04/cluster/lvs_solution/</loc>
+    <lastmod>2018-03-15T08:56:26.000Z</lastmod>
+    <data>
+        <display>
+        <title>Linux服务器集群方案介绍之 nginx，lvs</title>
+        <pubTime>2018-03-04T07:46:00.000Z</pubTime>
+        
+        <tag>linux</tag>
+         
+        <tag>lvs</tag>
+         
+        <tag>keepalived</tag>
+         
+        <tag>cluster</tag>
+         
+        <tag>nginx</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术" url="http://jiangyu86.cn/categories/%E6%8A%80%E6%9C%AF/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+    
+    
+  <url>
+    <loc>http://jiangyu86.cn/2018/03/01/start/</loc>
+    <lastmod>2018-03-13T07:45:33.000Z</lastmod>
+    <data>
+        <display>
+        <title>开篇，为精品而努力.</title>
+        <pubTime>2018-03-01T02:00:00.000Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+</urlset>

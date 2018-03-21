@@ -100,31 +100,31 @@
 
 
   
-  <meta name="keywords" content="linux,cluster,nginx,lvs,keepalived," />
+  <meta name="keywords" content="linux,lvs,keepalived,cluster,nginx," />
 
 
 <meta name="description" content="服务(器)集群，涉及的知识点相对偏操作系统底层，所以想理解并掌握整体的方案，需要将相关的知识点系统化的学习。   centos7+nginx+keepalived实践，及原理分析centos7+lvs+keepalived实践，及原理分析本文尽可能的关注解决方案的整体与关键点，弱化介绍方案中各软件应用的参数配置. 依赖知识点大致可分为三块：OS(Centos7，不同系统、版本间会有细微差异)，网络">
-<meta name="keywords" content="linux,cluster,nginx,lvs,keepalived">
+<meta name="keywords" content="linux,lvs,keepalived,cluster,nginx">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux服务器集群方案介绍-(nginx&#x2F;lvs)">
-<meta property="og:url" content="http://yoursite.com/2018/03/04/lvs_cluster_solution/index.html">
+<meta property="og:title" content="Linux服务器集群方案介绍之 nginx，lvs">
+<meta property="og:url" content="http://jiangyu86.cn/2018/03/04/cluster/lvs_solution/index.html">
 <meta property="og:site_name" content="WolfJ">
 <meta property="og:description" content="服务(器)集群，涉及的知识点相对偏操作系统底层，所以想理解并掌握整体的方案，需要将相关的知识点系统化的学习。   centos7+nginx+keepalived实践，及原理分析centos7+lvs+keepalived实践，及原理分析本文尽可能的关注解决方案的整体与关键点，弱化介绍方案中各软件应用的参数配置. 依赖知识点大致可分为三块：OS(Centos7，不同系统、版本间会有细微差异)，网络">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/2018/03/04/images/nat.png">
-<meta property="og:image" content="http://yoursite.com/2018/03/04/images/dr.png">
-<meta property="og:updated_time" content="2018-03-13T10:24:40.000Z">
+<meta property="og:image" content="http://jiangyu86.cn/2018/03/04/cluster/images/nat.png">
+<meta property="og:image" content="http://jiangyu86.cn/2018/03/04/cluster/images/dr.png">
+<meta property="og:updated_time" content="2018-03-15T08:56:26.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux服务器集群方案介绍-(nginx&#x2F;lvs)">
+<meta name="twitter:title" content="Linux服务器集群方案介绍之 nginx，lvs">
 <meta name="twitter:description" content="服务(器)集群，涉及的知识点相对偏操作系统底层，所以想理解并掌握整体的方案，需要将相关的知识点系统化的学习。   centos7+nginx+keepalived实践，及原理分析centos7+lvs+keepalived实践，及原理分析本文尽可能的关注解决方案的整体与关键点，弱化介绍方案中各软件应用的参数配置. 依赖知识点大致可分为三块：OS(Centos7，不同系统、版本间会有细微差异)，网络">
-<meta name="twitter:image" content="http://yoursite.com/2018/03/04/images/nat.png">
+<meta name="twitter:image" content="http://jiangyu86.cn/2018/03/04/cluster/images/nat.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/03/04/lvs_cluster_solution/"/>
+  <link rel="canonical" href="http://jiangyu86.cn/2018/03/04/cluster/lvs_solution/"/>
 
 
 
@@ -133,7 +133,7 @@
     sidebar: "",
   };
 </script>
-  <title>Linux服务器集群方案介绍-(nginx/lvs) | WolfJ</title>
+  <title>Linux服务器集群方案介绍之 nginx，lvs | WolfJ</title>
   
 
 
@@ -296,7 +296,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/04/lvs_cluster_solution/">
+    <link itemprop="mainEntityOfPage" href="http://jiangyu86.cn/2018/03/04/cluster/lvs_solution/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WolfJ">
@@ -313,7 +313,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Linux服务器集群方案介绍-(nginx/lvs)</h1>
+          <h1 class="post-title" itemprop="name headline">Linux服务器集群方案介绍之 nginx，lvs</h1>
         
 
         <div class="post-meta">
@@ -396,18 +396,9 @@
 <p>1.2 DR模式<br>未尝试  </p>
 <h4 id="LocalNode-两台负载负载-多真实服务器"><a href="#LocalNode-两台负载负载-多真实服务器" class="headerlink" title="LocalNode+两台负载负载+多真实服务器"></a>LocalNode+两台负载负载+多真实服务器</h4><p>lvs + keepalived 两台负载调度器，集成在某两台真实服务器中，实现负载及高可用。<br>2.1 NAT模式<br>未尝试</p>
 <p>2.2 DR模式<br><strong>参考连接：</strong><br><a href="http://kb.linuxvirtualserver.org/wiki/Building_Two-Node_Directors/Real_Servers_using_LVS_and_Keepalived" target="_blank" rel="noopener">Building Two-Node Directors/Real Servers using LVS and Keepalived</a><br><a href="http://linbo.github.io/2017/08/20/lvs-dr" target="_blank" rel="noopener">LVS DR模式的一些问题</a><br><a href="http://gcharriere.com/blog/?p=339" target="_blank" rel="noopener">Failover and loadbalancer using keepalived (LVS) on two machines -ok</a></p>
-<h3 id="场景图说明"><a href="#场景图说明" class="headerlink" title="场景图说明"></a>场景图说明</h3><p>lvs + keepalived NAT mode:<br><img src="/2018/03/04/lvs_cluster_solution/../images/nat.png" alt="lvs + keepalived NAT模式"></p>
-<p>lvs + keepalived DR mode:<br><img src="/2018/03/04/lvs_cluster_solution/../images/dr.png" alt="lvs + keepalived DR模式"></p>
+<h3 id="场景图说明"><a href="#场景图说明" class="headerlink" title="场景图说明"></a>场景图说明</h3><p>lvs + keepalived NAT mode:<br><img src="/2018/03/04/cluster/lvs_solution/../images/nat.png" alt="lvs + keepalived NAT模式"></p>
+<p>lvs + keepalived DR mode:<br><img src="/2018/03/04/cluster/lvs_solution/../images/dr.png" alt="lvs + keepalived DR模式"></p>
 <h2 id="场景详解"><a href="#场景详解" class="headerlink" title="场景详解"></a>场景详解</h2><p>参见每个具体的场景介绍</p>
-<p>独立部署步骤</p>
-<ul>
-<li>Director节点安装ipvsadm，承担LVS的负载调度能力  </li>
-<li>Director节点安装keepalived，负责VRRP的配置，对故障处理(Failover)实现LVS的高可用</li>
-<li>在Director上配置keepalived，先后配置主/备、权重、IP负载均衡技术、调度算法、监听IP，负载IP等信息、、、、</li>
-<li>RealServer配置VIP，用于接收目标是VIP的网络包</li>
-<li>RealServer部署自己的服务应用(apache,nginx,tomcat…)</li>
-<li>防火墙开启相应端口</li>
-</ul>
 <p>All machines in the LVS have the VIP: only the VIP on the director replies to arp requests, the VIP on the realservers must be on a non-arping device (eg lo:0, dummy).</p>
 <p>详细配置参见<a href="">lvs+keepalived DR</a></p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>发现好些资料都指向了<a href="http://archive.linuxvirtualserver.org/" target="_blank" rel="noopener">archive.linuxvirtualserver.org</a>，但这个网站显示服务器意外中断，以https访问时也显示页面不存在。</p>
@@ -433,13 +424,13 @@
           
             <a href="/tags/linux/" rel="tag"># linux</a>
           
-            <a href="/tags/cluster/" rel="tag"># cluster</a>
-          
-            <a href="/tags/nginx/" rel="tag"># nginx</a>
-          
             <a href="/tags/lvs/" rel="tag"># lvs</a>
           
             <a href="/tags/keepalived/" rel="tag"># keepalived</a>
+          
+            <a href="/tags/cluster/" rel="tag"># cluster</a>
+          
+            <a href="/tags/nginx/" rel="tag"># nginx</a>
           
         </div>
       
@@ -462,8 +453,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/04/lvs_cluster_localnode/" rel="prev" title="LVS：LocalNode / Two Box LVS / LVS集成模式配置与原理详解">
-                LVS：LocalNode / Two Box LVS / LVS集成模式配置与原理详解 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/04/cluster/lvs_localnode_dr/" rel="prev" title="两台机器 Centos7 LVS+Keepalived 实现负载/高可用之 DR 集成部署(LocalNode/Two Box)及原理详解">
+                两台机器 Centos7 LVS+Keepalived 实现负载/高可用之 DR 集成部署(LocalNode/Two Box)及原理详解 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -538,7 +529,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -584,7 +575,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
