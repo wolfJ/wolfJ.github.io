@@ -117,7 +117,7 @@
 <meta property="og:image" content="http://jiangyu86.cn/2018/03/04/cluster/lvs_localnode_dr/introduce-lvs-mark.png">
 <meta property="og:image" content="http://jiangyu86.cn/2018/03/04/cluster/lvs_localnode_dr/introduce-lvs-netfilter-1.png">
 <meta property="og:image" content="http://jiangyu86.cn/2018/03/04/cluster/lvs_localnode_dr/introduce-lvs-netfilter-2.png">
-<meta property="og:updated_time" content="2018-03-16T08:29:20.000Z">
+<meta property="og:updated_time" content="2018-04-23T04:51:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="两台机器 Centos7 LVS+Keepalived 实现负载&#x2F;高可用之 DR 集成部署(LocalNode&#x2F;Two Box)及原理详解">
 <meta name="twitter:description" content="介绍 LVS：LocalNodeLVS经典部署场景是Director服务器与RealServer服务器分开部署，独立服务器，一来是为了充分利用硬件性能，二来是为了避免故障相互影响。然而某些时候会把Director与RealServer视为一个软件模块部署在同一台服务器上，用两台服务器部署两套软件，实现负载与高可用。   Two Box LVS仅在两台设备上同样可以完整的实现LVS的故障处理。其中一">
@@ -396,6 +396,7 @@
 <li>master 收到包后，又可能把包转给 backup，然后陷入死循环。 </li>
 </ul>
 <h2 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h2><p><img src="/2018/03/04/cluster/lvs_localnode_dr/two-box-lvs-architecture.png" alt="two-box-lvs-architecture"></p>
+<a id="more"></a>
 <h2 id="解决实现思路"><a href="#解决实现思路" class="headerlink" title="解决实现思路"></a>解决实现思路</h2><p>在两台机器上实现LVS有以下几种思路可以实现：  </p>
 <ul>
 <li><p>方案一：对网络包打Mark<br>通过iptables对收到的网络包(packets)打Mark。  </p>
@@ -753,7 +754,7 @@ firewall-cmd --reload
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -803,7 +804,13 @@ firewall-cmd --reload
                     
                       
                     
-                    <span class="site-state-item-count">11</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

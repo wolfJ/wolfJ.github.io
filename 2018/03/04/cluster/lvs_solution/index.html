@@ -113,7 +113,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://jiangyu86.cn/2018/03/04/cluster/images/nat.png">
 <meta property="og:image" content="http://jiangyu86.cn/2018/03/04/cluster/images/dr.png">
-<meta property="og:updated_time" content="2018-03-15T08:56:26.000Z">
+<meta property="og:updated_time" content="2018-04-23T04:45:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux服务器集群方案介绍之 nginx，lvs">
 <meta name="twitter:description" content="服务(器)集群，涉及的知识点相对偏操作系统底层，所以想理解并掌握整体的方案，需要将相关的知识点系统化的学习。   centos7+nginx+keepalived实践，及原理分析centos7+lvs+keepalived实践，及原理分析本文尽可能的关注解决方案的整体与关键点，弱化介绍方案中各软件应用的参数配置. 依赖知识点大致可分为三块：OS(Centos7，不同系统、版本间会有细微差异)，网络">
@@ -384,7 +384,8 @@
 <p>centos7+nginx+keepalived实践，及原理分析<br>centos7+lvs+keepalived实践，及原理分析<br>本文尽可能的关注解决方案的整体与关键点，弱化介绍方案中各软件应用的参数配置.</p>
 <h2 id="依赖知识点"><a href="#依赖知识点" class="headerlink" title="依赖知识点"></a>依赖知识点</h2><p>大致可分为三块：<br>OS(Centos7，不同系统、版本间会有细微差异)，<br>网络(协议，拓扑，流向)，<br>应用(上层应用，如tomcat,mysql,等).</p>
 <h2 id="概念名词"><a href="#概念名词" class="headerlink" title="概念名词"></a>概念名词</h2><p>Linux, Cluster, Load Balancer(LB), High Availability(HA), High Performance(HPC), Node, DNS, FailOver, VRRP<br>Director,RealServer, Proxy<br>DR,NAT,TUN<br>Nginx, Keepalived, LVS, F5, IPVS, KTCPVS, NetFilter<br>集群，负载，高可用，负载均衡器，节点<br>扩展性<br>二层、三层、四层交换机、路由器，四层交换，七层交换，反向代理，中间人  </p>
-<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><p>方案选型<br>安装配置、启动<br>问题及排查<br>服务器要求/性能？  </p>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><a id="more"></a>
+<p>方案选型<br>安装配置、启动<br>问题及排查<br>服务器要求/性能？  </p>
 <h2 id="场景介绍"><a href="#场景介绍" class="headerlink" title="场景介绍"></a>场景介绍</h2><h4 id="nginx独立负载"><a href="#nginx独立负载" class="headerlink" title="nginx独立负载"></a>nginx独立负载</h4><p>单台负载调度器 + 多台真实服务器，实现负载能力.<br>nginx实现负载，老版本支持七层负载，新版本也支持四层负载了。<br><strong>参考连接：</strong><br><a href="https://www.jianshu.com/p/90831a94ce43" target="_blank" rel="noopener">nginx负载均衡配置</a><br><a href="https://wuguiyunwei.com/index.php/2017/06/14/919.html" target="_blank" rel="noopener">nginx四层负载均衡配置代理Mysql集群</a></p>
 <h4 id="nginx独立负载-主备"><a href="#nginx独立负载-主备" class="headerlink" title="nginx独立负载+主备"></a>nginx独立负载+主备</h4><p>双台负载调度器 + 多台真实服务器; 主备<br>nginx实现负载，keepalived实现HA。<br><strong>参考连接：</strong><br><a href="http://seanlook.com/2015/05/18/nginx-keepalived-ha/index.html" target="_blank" rel="noopener">Nginx+Keepalived实现站点高可用</a></p>
 <!--Nginx四层负载，工作在OS的用户空间，性能略差一点，但具体怎么样要测试下，还看到了付费？仔细了解一下。网上大多是以前的文章了，工作在七层。
@@ -529,7 +530,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -579,7 +580,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">11</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

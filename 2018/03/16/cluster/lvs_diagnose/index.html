@@ -103,18 +103,18 @@
   <meta name="keywords" content="linux,centos7," />
 
 
-<meta name="description" content="目录在Centos7下部署、配置集群环境时，经常会遇到各种问题，需要一些相关排查技能才可以做到兵来将挡，应对自如。 技能介绍如何查看(debug) iptables/netfilter的详细日志Load the (IPv4) netfilter log kernel module: modprobe nf_log_ipv4 Enable logging for the IPv4 (AF Famil">
+<meta name="description" content="在Centos7下部署、配置集群环境时，经常会遇到各种问题，需要一些相关排查技能才可以做到兵来将挡，应对自如。 技能介绍如何查看(debug) iptables/netfilter的详细日志">
 <meta name="keywords" content="linux,centos7">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux&#x2F;Centos7 下排查集群环境问题方法">
 <meta property="og:url" content="http://jiangyu86.cn/2018/03/16/cluster/lvs_diagnose/index.html">
 <meta property="og:site_name" content="WolfJ">
-<meta property="og:description" content="目录在Centos7下部署、配置集群环境时，经常会遇到各种问题，需要一些相关排查技能才可以做到兵来将挡，应对自如。 技能介绍如何查看(debug) iptables/netfilter的详细日志Load the (IPv4) netfilter log kernel module: modprobe nf_log_ipv4 Enable logging for the IPv4 (AF Famil">
+<meta property="og:description" content="在Centos7下部署、配置集群环境时，经常会遇到各种问题，需要一些相关排查技能才可以做到兵来将挡，应对自如。 技能介绍如何查看(debug) iptables/netfilter的详细日志">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-03-16T07:47:12.000Z">
+<meta property="og:updated_time" content="2018-04-23T04:50:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux&#x2F;Centos7 下排查集群环境问题方法">
-<meta name="twitter:description" content="目录在Centos7下部署、配置集群环境时，经常会遇到各种问题，需要一些相关排查技能才可以做到兵来将挡，应对自如。 技能介绍如何查看(debug) iptables/netfilter的详细日志Load the (IPv4) netfilter log kernel module: modprobe nf_log_ipv4 Enable logging for the IPv4 (AF Famil">
+<meta name="twitter:description" content="在Centos7下部署、配置集群环境时，经常会遇到各种问题，需要一些相关排查技能才可以做到兵来将挡，应对自如。 技能介绍如何查看(debug) iptables/netfilter的详细日志">
 
 
 
@@ -377,8 +377,9 @@
       
 
       
-        <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p>在Centos7下部署、配置集群环境时，经常会遇到各种问题，需要一些相关排查技能才可以做到兵来将挡，应对自如。</p>
-<h2 id="技能介绍"><a href="#技能介绍" class="headerlink" title="技能介绍"></a>技能介绍</h2><h3 id="如何查看-debug-iptables-netfilter的详细日志"><a href="#如何查看-debug-iptables-netfilter的详细日志" class="headerlink" title="如何查看(debug) iptables/netfilter的详细日志"></a>如何查看(debug) iptables/netfilter的详细日志</h3><p>Load the (IPv4) netfilter log kernel module:</p>
+        <p>在Centos7下部署、配置集群环境时，经常会遇到各种问题，需要一些相关排查技能才可以做到兵来将挡，应对自如。</p>
+<h2 id="技能介绍"><a href="#技能介绍" class="headerlink" title="技能介绍"></a>技能介绍</h2><h3 id="如何查看-debug-iptables-netfilter的详细日志"><a href="#如何查看-debug-iptables-netfilter的详细日志" class="headerlink" title="如何查看(debug) iptables/netfilter的详细日志"></a>如何查看(debug) iptables/netfilter的详细日志</h3><a id="more"></a>
+<p>Load the (IPv4) netfilter log kernel module:</p>
 <pre><code>modprobe nf_log_ipv4
 </code></pre><p>Enable logging for the IPv4 (AF Family 2):</p>
 <pre><code>sysctl net.netfilter.nf_log.2=nf_log_ipv4
@@ -458,6 +459,10 @@ Mar 16 02:46:36 localhost kernel: TRACE: mangle:INPUT:rule:1 IN=enp0s3 OUT= MAC=
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/05/07/common-scripts/" rel="prev" title="常用脚本记录(common-scripts)">
+                常用脚本记录(common-scripts) <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -530,7 +535,7 @@ Mar 16 02:46:36 localhost kernel: TRACE: mangle:INPUT:rule:1 IN=enp0s3 OUT= MAC=
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -580,7 +585,13 @@ Mar 16 02:46:36 localhost kernel: TRACE: mangle:INPUT:rule:1 IN=enp0s3 OUT= MAC=
                     
                       
                     
-                    <span class="site-state-item-count">11</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -616,7 +627,7 @@ Mar 16 02:46:36 localhost kernel: TRACE: mangle:INPUT:rule:1 IN=enp0s3 OUT= MAC=
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目录"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技能介绍"><span class="nav-number">2.</span> <span class="nav-text">技能介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何查看-debug-iptables-netfilter的详细日志"><span class="nav-number">2.1.</span> <span class="nav-text">如何查看(debug) iptables/netfilter的详细日志</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#技能介绍"><span class="nav-number">1.</span> <span class="nav-text">技能介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何查看-debug-iptables-netfilter的详细日志"><span class="nav-number">1.1.</span> <span class="nav-text">如何查看(debug) iptables/netfilter的详细日志</span></a></li></ol></li></ol></div>
             
 
           </div>

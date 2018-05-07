@@ -103,19 +103,19 @@
   <meta name="keywords" content="linux,lvs,keepalived,vrrp,centos," />
 
 
-<meta name="description" content="目标LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁的表妹LVS负载。 环境Centos7.3 Minimal版(干净)ipvsadm，负载模块keepalived，高可用模块nginx 应用服务模块   架构给出架构图:Director节点ipvsadm模块，承担LVS的负">
+<meta name="description" content="目标LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁侄女LVS负载。 环境Centos7.3 Minimal版(干净)ipvsadm，负载模块keepalived，高可用模块nginx 应用服务模块   架构给出架构图:">
 <meta name="keywords" content="linux,lvs,keepalived,vrrp,centos">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Centos7 LVS+Keepalived 实现负载&#x2F;高可用之 DR 独立部署及详解">
 <meta property="og:url" content="http://jiangyu86.cn/2018/03/08/cluster/lvs_normal_dr/index.html">
 <meta property="og:site_name" content="WolfJ">
-<meta property="og:description" content="目标LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁的表妹LVS负载。 环境Centos7.3 Minimal版(干净)ipvsadm，负载模块keepalived，高可用模块nginx 应用服务模块   架构给出架构图:Director节点ipvsadm模块，承担LVS的负">
+<meta property="og:description" content="目标LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁侄女LVS负载。 环境Centos7.3 Minimal版(干净)ipvsadm，负载模块keepalived，高可用模块nginx 应用服务模块   架构给出架构图:">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://jiangyu86.cn/2018/03/08/cluster/lvs_normal_dr/dr.png">
-<meta property="og:updated_time" content="2018-03-16T06:19:58.000Z">
+<meta property="og:updated_time" content="2018-05-07T01:32:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Centos7 LVS+Keepalived 实现负载&#x2F;高可用之 DR 独立部署及详解">
-<meta name="twitter:description" content="目标LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁的表妹LVS负载。 环境Centos7.3 Minimal版(干净)ipvsadm，负载模块keepalived，高可用模块nginx 应用服务模块   架构给出架构图:Director节点ipvsadm模块，承担LVS的负">
+<meta name="twitter:description" content="目标LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁侄女LVS负载。 环境Centos7.3 Minimal版(干净)ipvsadm，负载模块keepalived，高可用模块nginx 应用服务模块   架构给出架构图:">
 <meta name="twitter:image" content="http://jiangyu86.cn/2018/03/08/cluster/lvs_normal_dr/dr.png">
 
 
@@ -379,9 +379,11 @@
       
 
       
-        <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁的表妹LVS负载。</p>
+        <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>LVS + Keepalived 实现负载+高可用，网上也存在许多教程，尝试、排查后大多能跑通。原因是大多教程记录了过程，缺少整体的把握与核心的理解。本篇目的是希望教会五岁侄女LVS负载。</p>
 <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>Centos7.3 Minimal版(干净)<br>ipvsadm，负载模块<br>keepalived，高可用模块<br>nginx 应用服务模块  </p>
-<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>给出架构图:<br><img src="/2018/03/08/cluster/lvs_normal_dr/dr.png" alt="lvs keepalived dr"><br>Director节点ipvsadm模块，承担LVS的负载调度能力.<br>Director节点keepalived模块，负责VRRP的配置，对故障处理(Failover)实现LVS的高可用.<br>RealServer部署自己的服务应用(apache,nginx,tomcat…)，此处选择nginx.   </p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>给出架构图:<br><img src="/2018/03/08/cluster/lvs_normal_dr/dr.png" alt="lvs keepalived dr">   </p>
+<a id="more"></a>
+<p>Director节点ipvsadm模块，承担LVS的负载调度能力.<br>Director节点keepalived模块，负责VRRP的配置，对故障处理(Failover)实现LVS的高可用.<br>RealServer部署自己的服务应用(apache,nginx,tomcat…)，此处选择nginx.   </p>
 <h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="设备安装基础软件"><a href="#设备安装基础软件" class="headerlink" title="设备安装基础软件"></a>设备安装基础软件</h3><p>Centos7 采用epel源安装相关软件及依赖</p>
 <pre><code>wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm   
 rpm -ivh epel-release-latest-7.noarch.rpm   
@@ -654,7 +656,7 @@ exit 0
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -704,7 +706,13 @@ exit 0
                     
                       
                     
-                    <span class="site-state-item-count">11</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
